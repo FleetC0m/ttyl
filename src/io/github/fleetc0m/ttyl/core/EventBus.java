@@ -10,10 +10,18 @@ import java.util.List;
  */
 public class EventBus {
     public static final String TAG = "EventBus";
+
+    /**
+     * Updater pushes an event onto the event bus if something interesting happens.
+     */
     public static interface Updater {
 
     }
 
+    /**
+     * Observer listens on the event bus once it's registered to the event bus. It handles events
+     * it cares.
+     */
     public static interface Observer {
         public void onStateChanged(Event event);
         public boolean shouldResponseTo(int eventType);

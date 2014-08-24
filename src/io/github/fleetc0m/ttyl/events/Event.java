@@ -8,6 +8,8 @@ import android.os.Bundle;
 public abstract class Event {
     public static final int INCOMING_CALL = 1;
     public static final int AGENDA = 1 << 1;
+    public static final int DRIVING = 1 << 2;
+    public static final int INCOMING_SMS = 1 << 3;
 
     public abstract int getEventType();
 

@@ -1,7 +1,7 @@
 package io.github.fleetc0m.ttyl.util;
 
 /**
- * Created by Icarus on 8/24/14.
+ * Just a regular clock.
  */
 public class ClockImpl implements Clock{
 

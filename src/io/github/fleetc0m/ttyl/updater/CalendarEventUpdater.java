@@ -10,13 +10,13 @@ import android.util.Log;
 import io.github.fleetc0m.ttyl.core.EventBus;
 import io.github.fleetc0m.ttyl.util.Clock;
 
-import java.util.Calendar;
-
 /**
- * Created by Icarus on 8/24/14.
+ * Handles querying calendar for ongoing event repeatedly every certain interval. If it finds an
+ * ongoing event that is deemed to be busy, it notifies the event bus with information about this
+ * calendar event.
  */
 public class CalendarEventUpdater implements EventBus.Updater, Runnable{
-
+    private static final String TAG = "CalendarEventUpdater";
     private static final String[] PROJECTION = new String[]{CalendarContract.Events.DESCRIPTION,
             CalendarContract.Events.SELF_ATTENDEE_STATUS,
             CalendarContract.Events.AVAILABILITY};
@@ -35,6 +35,10 @@ public class CalendarEventUpdater implements EventBus.Updater, Runnable{
 
     }
 
+    /**
+     * Queries the calendar provider, and commit an event to the event bus with calendar entry
+     * details if a calendar entry in which the user is busy is going on.
+     */
     public void maybeNotifyEventBusforOngoingEvent() {
 
     }
@@ -53,6 +57,7 @@ public class CalendarEventUpdater implements EventBus.Updater, Runnable{
             return null;
         }
 
+        Bundle bundle = new Bundle();
         while (cursor.moveToNext()) {
             String descriptionStr = cursor.getString(
                     cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION));
@@ -60,7 +65,23 @@ public class CalendarEventUpdater implements EventBus.Updater, Runnable{
                     cursor.getColumnIndex(CalendarContract.Events.SELF_ATTENDEE_STATUS));
             int availability = cursor.getInt(
                     cursor.getColumnIndex(CalendarContract.Events.AVAILABILITY));
-
+            if (isBusy(selfAttendeeStatus, availability)) {
+                // bundle.putString();
+            }
         }
+        return bundle;
+    }
+
+    private boolean isBusy(int selfAttendeeStatus, int availability) {
+        if (selfAttendeeStatus == CalendarContract.Events.STATUS_CONFIRMED ||
+                selfAttendeeStatus == CalendarContract.Events.STATUS_TENTATIVE) {
+            return true;
+        }
+
+        if (availability == CalendarContract.Events.AVAILABILITY_BUSY ||
+                availability == CalendarContract.Events.AVAILABILITY_TENTATIVE) {
+            return true;
+        }
+        return false;
     }
 }
