@@ -10,6 +10,7 @@ public abstract class Event {
     public static final int AGENDA = 1 << 1;
     public static final int DRIVING = 1 << 2;
     public static final int INCOMING_SMS = 1 << 3;
+    public static final int APP_QUIT = 1 << 4;
 
     public abstract int getEventType();
 

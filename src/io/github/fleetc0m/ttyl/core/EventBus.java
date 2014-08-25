@@ -1,9 +1,9 @@
 package io.github.fleetc0m.ttyl.core;
 
-import io.github.fleetc0m.ttyl.events.Event;
+import android.util.*;
+import io.github.fleetc0m.ttyl.events.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Event bus handles all incoming events from Updater and propagate events to all observers.
@@ -32,7 +32,6 @@ public class EventBus {
     private final List<Observer> mObserverList;
 
     protected EventBus() {
-        mEventBus = new EventBus();
         mUpdaterList = new ArrayList<Updater>();
         mObserverList = new ArrayList<Observer>();
     }
@@ -46,6 +45,7 @@ public class EventBus {
     }
 
     public synchronized void onStateChanged(Event event) {
+        Log.d(TAG, String.format("onStateChanged: %d", event.getEventType()));
         for (Observer observer : mObserverList) {
             if (observer.shouldResponseTo(event.getEventType())) {
                 observer.onStateChanged(event);

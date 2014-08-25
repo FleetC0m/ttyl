@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Talk To You Later</string>
+    
+    <string-array name="nav_drawer_titles">
+        <item>You\'ve missed...</item>
+        <item>When you are in a meeting...</item>
+        <item>When you are driving...</item>
+        <item>When you just don\'t feel like to talk...</item>
+    </string-array>
 </resources>

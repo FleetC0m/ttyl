@@ -5,6 +5,9 @@
           android:versionName="1.0">
     <uses-sdk android:minSdkVersion="15" android:targetSdkVersion="20"/>
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name="HomeActivity"
                   android:label="@string/app_name">
@@ -13,5 +16,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <service android:name=".core.BackgroundService">
+        </service>
+
+        <receiver android:name=".core.BootCompleteReceiver"
+                  android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
