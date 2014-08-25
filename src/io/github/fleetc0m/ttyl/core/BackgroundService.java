@@ -1,12 +1,15 @@
 package io.github.fleetc0m.ttyl.core;
 
-import android.app.*;
-import android.content.*;
-import android.os.*;
-import io.github.fleetc0m.ttyl.*;
-import io.github.fleetc0m.ttyl.observer.*;
-import io.github.fleetc0m.ttyl.updater.*;
-import io.github.fleetc0m.ttyl.util.*;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+import io.github.fleetc0m.ttyl.HomeActivity;
+import io.github.fleetc0m.ttyl.observer.CalendarRingerMuter;
+import io.github.fleetc0m.ttyl.updater.CalendarEventUpdater;
+import io.github.fleetc0m.ttyl.util.Clock;
+import io.github.fleetc0m.ttyl.util.ClockImpl;
 
 /**
  * Created on boot complete or when user first open the app and decide to start the service.

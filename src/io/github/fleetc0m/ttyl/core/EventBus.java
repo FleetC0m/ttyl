@@ -1,9 +1,10 @@
 package io.github.fleetc0m.ttyl.core;
 
-import android.util.*;
-import io.github.fleetc0m.ttyl.events.*;
+import android.util.Log;
+import io.github.fleetc0m.ttyl.events.Event;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Event bus handles all incoming events from Updater and propagate events to all observers.

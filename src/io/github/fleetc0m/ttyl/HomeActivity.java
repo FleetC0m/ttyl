@@ -1,12 +1,16 @@
 package io.github.fleetc0m.ttyl;
 
-import android.app.*;
-import android.content.*;
-import android.os.*;
-import android.support.v4.widget.*;
-import android.view.*;
-import android.widget.*;
-import io.github.fleetc0m.ttyl.core.*;
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import io.github.fleetc0m.ttyl.core.BackgroundService;
 
 public class HomeActivity extends Activity {
     private static final String TAG = "HomeActivity";

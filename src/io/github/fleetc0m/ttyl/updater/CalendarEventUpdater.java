@@ -1,15 +1,17 @@
 package io.github.fleetc0m.ttyl.updater;
 
-import android.content.*;
-import android.database.*;
-import android.net.*;
-import android.os.*;
-import android.provider.*;
-import android.text.format.*;
-import android.util.*;
-import io.github.fleetc0m.ttyl.core.*;
-import io.github.fleetc0m.ttyl.events.*;
-import io.github.fleetc0m.ttyl.util.*;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.text.format.DateUtils;
+import android.util.Log;
+import io.github.fleetc0m.ttyl.core.EventBus;
+import io.github.fleetc0m.ttyl.events.CalendarEvent;
+import io.github.fleetc0m.ttyl.events.Event;
+import io.github.fleetc0m.ttyl.util.Clock;
 
 /**
  * Handles querying calendar for ongoing event repeatedly every certain interval. If it finds an
