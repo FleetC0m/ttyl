@@ -125,14 +125,14 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
 
     @Override
     public void onStateChanged(Event event) {
-        if (event.getEventType() == Event.APP_QUIT) {
+        if (event.getEventType().equals(Event.QUIT)) {
             mShouldRun = false;
         }
     }
 
     @Override
-    public boolean shouldResponseTo(int eventType) {
-        if (eventType == Event.APP_QUIT) {
+    public boolean shouldResponseTo(String eventType) {
+        if (eventType.equals(Event.QUIT)) {
             return true;
         }
         return false;

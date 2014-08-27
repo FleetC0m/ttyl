@@ -25,7 +25,7 @@ public class EventBus {
      */
     public static interface Observer {
         public void onStateChanged(Event event);
-        public boolean shouldResponseTo(int eventType);
+        public boolean shouldResponseTo(String eventType);
     }
 
     private static EventBus mEventBus;
@@ -46,7 +46,7 @@ public class EventBus {
     }
 
     public synchronized void onStateChanged(Event event) {
-        Log.d(TAG, String.format("onStateChanged: %d", event.getEventType()));
+        Log.d(TAG, String.format("onStateChanged: %s", event.getEventType()));
         for (Observer observer : mObserverList) {
             if (observer.shouldResponseTo(event.getEventType())) {
                 observer.onStateChanged(event);

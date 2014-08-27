@@ -14,8 +14,8 @@ public class CalendarEvent extends Event {
         mBundle = bundle;
     }
     @Override
-    public int getEventType() {
-        return Event.AGENDA;
+    public String getEventType() {
+        return Event.CALENDAR_ENTRY;
     }
 
     @Override

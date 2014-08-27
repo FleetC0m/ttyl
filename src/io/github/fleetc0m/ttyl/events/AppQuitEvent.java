@@ -7,8 +7,8 @@ import android.os.Bundle;
  */
 public class AppQuitEvent extends Event{
     @Override
-    public int getEventType() {
-        return Event.APP_QUIT;
+    public String getEventType() {
+        return Event.QUIT;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class BackgroundService extends Service{
     }
 
     private void registerObservers() {
-        mCalendarRingerMuter = new CalendarRingerMuter(this);
+        mCalendarRingerMuter = new CalendarRingerMuter(this, mEventBus);
         mEventBus.registerObserver(mCalendarRingerMuter);
     }
 
