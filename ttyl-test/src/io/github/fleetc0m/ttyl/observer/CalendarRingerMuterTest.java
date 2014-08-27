@@ -54,14 +54,19 @@ public class CalendarRingerMuterTest extends AndroidTestCase {
 
         ArgumentCaptor<RingerChangeEvent> ringerChangeEventArgumentCaptor =
                 ArgumentCaptor.forClass(RingerChangeEvent.class);
-        // verify(mMockAudioManager).setRingerMode(AudioManager.RINGER_MODE_SILENT);
-        verify(mMockObserver).onStateChanged(ringerChangeEventArgumentCaptor.capture());
-        RingerChangeEvent ringerChangeEvent = ringerChangeEventArgumentCaptor.getAllValues().get();
-        assertEquals(AudioManager.RINGER_MODE_NORMAL,
-                ringerChangeEvent.getAdditionalInfo().getInt(
-                        RingerChangeEvent.KEY_ORIG_RINGER_MODE_INT));
-        assertEquals(AudioManager.RINGER_MODE_SILENT,
-                ringerChangeEvent.getAdditionalInfo().getInt(
-                        RingerChangeEvent.KEY_NEW_RINGER_MODE_INT));
+        // There should be a call to mMockAudioManager.setRingerMode(RINGER_MODE_SILENCE)
+        // because we have a busy calendar event. But for some reason this function is not being
+        // called.
+        verify(mMockAudioManager).setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        // verify(mMockObserver).onStateChanged(ringerChangeEventArgumentCaptor.capture());
+        // There should be two events committed onto the eventBus
+        // 0. CalendarEvent 1. RingerChangeEvent
+        // RingerChangeEvent ringerChangeEvent = ringerChangeEventArgumentCaptor.getAllValues().get(1);
+        // assertEquals(AudioManager.RINGER_MODE_NORMAL,
+        //        ringerChangeEvent.getAdditionalInfo().getInt(
+        //                RingerChangeEvent.KEY_ORIG_RINGER_MODE_INT));
+        //assertEquals(AudioManager.RINGER_MODE_SILENT,
+        //        ringerChangeEvent.getAdditionalInfo().getInt(
+        //                RingerChangeEvent.KEY_NEW_RINGER_MODE_INT));
     }
 }
