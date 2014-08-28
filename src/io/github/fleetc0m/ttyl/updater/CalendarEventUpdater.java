@@ -26,7 +26,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
             CalendarContract.Events.TITLE};
 
     /** Look up the calendar provider every INTERVAL_MS */
-    private static final long INTERVAL_MS = 2 * DateUtils.MINUTE_IN_MILLIS;
+    private static final long INTERVAL_MS = 2 * DateUtils.SECOND_IN_MILLIS;
 
     private final Clock mClock;
     private final Context mContext;
@@ -50,7 +50,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
     @Override
     public void run() {
         while(mShouldRun) {
-            notifyEventBusForOngoingEvent();
+            maybeNotifyEventBusForOngoingEvent();
             try {
                 Thread.sleep(INTERVAL_MS);
             } catch (InterruptedException e) {
@@ -63,7 +63,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
      * Queries the calendar provider, and commit an event to the event bus with calendar entry
      * details if a calendar entry in which the user is busy is going on.
      */
-    public void notifyEventBusForOngoingEvent() {
+    private void maybeNotifyEventBusForOngoingEvent() {
         Bundle bundle = queryCurrentOngoingEvent();
         if (bundle != null) {
             CalendarEvent calendarEvent = new CalendarEvent(bundle);
@@ -112,7 +112,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
                 return bundle;
             }
         }
-        if (mPreviousState == true) {
+        if ((cursor.getCount() == 0) && (mPreviousState == true)) {
             Log.d(TAG, "user is now free");
             mPreviousState = false;
             bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, false);
