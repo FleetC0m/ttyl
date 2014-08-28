@@ -33,11 +33,17 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
     private final EventBus mEventBus;
     private volatile boolean mShouldRun;
 
+    /** The previous status (true = busy/false = free). We only send out event if we see a change
+     * to the state.
+     */
+    private boolean mPreviousState;
+
     public CalendarEventUpdater(Clock clock, Context context, EventBus eventBus) {
         mClock = clock;
         mContext = context;
         mEventBus = eventBus;
         mShouldRun = true;
+        mPreviousState = false;
         new Thread(this).start();
     }
 
@@ -97,7 +103,8 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
                     cursor.getColumnIndex(CalendarContract.Events.SELF_ATTENDEE_STATUS));
             int availability = cursor.getInt(
                     cursor.getColumnIndex(CalendarContract.Events.AVAILABILITY));
-            if (isBusy(selfAttendeeStatus, availability)) {
+            if (isBusy(selfAttendeeStatus, availability) && (mPreviousState == false)) {
+                mPreviousState = true;
                 bundle.putString(CalendarContract.Events.DESCRIPTION, descriptionStr);
                 bundle.putString(CalendarContract.Events.TITLE, title);
                 bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, true);
@@ -105,9 +112,13 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
                 return bundle;
             }
         }
-        Log.d(TAG, "user is free at the moment");
-        bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, false);
-        return bundle;
+        if (mPreviousState == true) {
+            Log.d(TAG, "user is now free");
+            mPreviousState = false;
+            bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, false);
+            return bundle;
+        }
+        return null;
     }
 
     private boolean isBusy(int selfAttendeeStatus, int availability) {
