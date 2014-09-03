@@ -9,6 +9,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import com.google.common.annotations.VisibleForTesting;
 import io.github.fleetc0m.ttyl.core.EventBus;
+import io.github.fleetc0m.ttyl.core.Settings;
 import io.github.fleetc0m.ttyl.events.DrivingEvent;
 import io.github.fleetc0m.ttyl.events.Event;
 import io.github.fleetc0m.ttyl.util.DrivingStateUtil;
@@ -22,14 +23,20 @@ import io.github.fleetc0m.ttyl.util.DrivingStateUtil;
  * in a five minute period.
  */
 public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer, Runnable {
+    /** The lower limit of speed which considered driving, in mph */
+    public static final String SETTING_SPEED_THRESHOLD_INT =
+            "driving-state-updater-setting-speed-threshold-int";
+
     private static final String TAG = "DrivingStateUpdater";
     /** Request location update for each interval */
     private static final long INTERVAL_MS = 5 * DateUtils.MINUTE_IN_MILLIS;
+    private static final int DEFAULT_SPEED_MPH_THRESHOLD = 40;
 
     private final Context mContext;
     private final EventBus mEventBus;
     private final LocationManager mLocationManager;
     private final DrivingStateUtil mDrivingStateUtil;
+    private final Settings mSettings;
 
     @VisibleForTesting public final LocationListener mLocationListener = new LocationListener() {
         @Override
@@ -41,7 +48,7 @@ public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer,
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if ((speedMph > mSpeedthreshold) && !mUserWasDriving) {
+                        if ((speedMph > getSpeedThresholdMph()) && !mUserWasDriving) {
                             mUserWasDriving = true;
                             Bundle bundle = new Bundle();
                             bundle.putBoolean(DrivingEvent.KEY_DRIVING_BOOLEAN, true);
@@ -50,7 +57,7 @@ public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer,
                             Log.d(TAG, "committing driving event, driving = true");
                             mEventBus.onStateChanged(drivingEvent);
                         }
-                        else if ((speedMph < mSpeedthreshold) && mUserWasDriving) {
+                        else if ((speedMph < getSpeedThresholdMph()) && mUserWasDriving) {
                             mUserWasDriving = false;
                             Bundle bundle = new Bundle();
                             bundle.putBoolean(DrivingEvent.KEY_DRIVING_BOOLEAN, false);
@@ -74,7 +81,7 @@ public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer,
     private boolean mShouldRun;
 
     /** If the user is moving faster than this speed in MPH */
-    private volatile double mSpeedthreshold;
+    private volatile double mSpeedThreshold;
 
     /** Whether user was driving at previous moment */
     private volatile boolean mUserWasDriving;
@@ -83,11 +90,28 @@ public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer,
         mContext = context;
         mEventBus = eventBus;
         mShouldRun = true;
-        mSpeedthreshold = 40; // MPH
         mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         mDrivingStateUtil = new DrivingStateUtil(mContext);
         mUserWasDriving = false;
+        mSettings = Settings.getSettings(context);
         new Thread(this).start();
+    }
+
+    @VisibleForTesting public DrivingStateUpdater(
+            Context context, EventBus eventBus, Settings settings) {
+        mContext = context;
+        mEventBus = eventBus;
+        mShouldRun = true;
+        mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
+        mDrivingStateUtil = new DrivingStateUtil(mContext);
+        mUserWasDriving = false;
+        mSettings = settings;
+        new Thread(this).start();
+    }
+
+    private int getSpeedThresholdMph() {
+        return mSettings.getSharedPreferences().getInt(SETTING_SPEED_THRESHOLD_INT,
+                DEFAULT_SPEED_MPH_THRESHOLD);
     }
 
     @Override

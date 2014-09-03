@@ -1,6 +1,7 @@
 package io.github.fleetc0m.ttyl.core;
 
 import android.util.Log;
+import com.google.common.annotations.VisibleForTesting;
 import io.github.fleetc0m.ttyl.events.Event;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class EventBus {
 
     private static EventBus mEventBus;
     private final List<Updater> mUpdaterList;
-    private final List<Observer> mObserverList;
+    @VisibleForTesting public final List<Observer> mObserverList;
 
     protected EventBus() {
         mUpdaterList = new ArrayList<Updater>();
@@ -52,6 +53,11 @@ public class EventBus {
                 observer.onStateChanged(event);
             }
         }
+    }
+
+    public synchronized void reset() {
+        mUpdaterList.clear();
+        mObserverList.clear();
     }
 
     public static synchronized EventBus getEventBus() {

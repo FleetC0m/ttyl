@@ -1,13 +1,14 @@
-package io.github.fleetc0m.ttyl.Updater;
+package io.github.fleetc0m.ttyl.updater;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.test.AndroidTestCase;
 import io.github.fleetc0m.ttyl.core.EventBus;
+import io.github.fleetc0m.ttyl.core.Settings;
 import io.github.fleetc0m.ttyl.events.DrivingEvent;
 import io.github.fleetc0m.ttyl.events.Event;
-import io.github.fleetc0m.ttyl.updater.DrivingStateUpdater;
 import io.github.fleetc0m.ttyl.util.DrivingStateUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,6 +32,8 @@ public class DrivingStateUpdaterTest extends AndroidTestCase {
     @Mock private LocationManager mMockLocationManager;
     @Mock private Location mMockLocation;
     @Mock private EventBus.Observer mMockObserver;
+    @Mock private SharedPreferences mMockSharedPrefs;
+    @Mock private Settings mMockSettings;
 
     private EventBus mEventBus;
     private DrivingStateUpdater mDrivingStateUpdater;
@@ -43,9 +47,12 @@ public class DrivingStateUpdaterTest extends AndroidTestCase {
         mDrivingStateUtil = new DrivingStateUtil(getContext());
         when(mMockContext.getSystemService(Context.LOCATION_SERVICE)).thenReturn(
                 mMockLocationManager);
+        when(mMockSettings.getSharedPreferences()).thenReturn(mMockSharedPrefs);
+        when(mMockSharedPrefs.getInt(eq(DrivingStateUpdater.SETTING_SPEED_THRESHOLD_INT),
+                any(Integer.class))).thenReturn(40);
         when(mMockObserver.shouldResponseTo(any(String.class))).thenReturn(true);
         mEventBus = EventBus.getEventBus();
-        mDrivingStateUpdater = new DrivingStateUpdater(mMockContext, mEventBus);
+        mDrivingStateUpdater = new DrivingStateUpdater(mMockContext, mEventBus, mMockSettings);
         mEventBus.registerUpdater(mDrivingStateUpdater);
         mEventBus.registerObserver(mMockObserver);
     }

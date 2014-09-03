@@ -23,7 +23,8 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
     private static final String[] PROJECTION = new String[]{CalendarContract.Events.DESCRIPTION,
             CalendarContract.Events.SELF_ATTENDEE_STATUS,
             CalendarContract.Events.AVAILABILITY,
-            CalendarContract.Events.TITLE};
+            CalendarContract.Events.TITLE,
+            CalendarContract.Events.CALENDAR_ID};
 
     /** Look up the calendar provider every INTERVAL_MS */
     private static final long INTERVAL_MS = 2 * DateUtils.SECOND_IN_MILLIS;
@@ -103,10 +104,13 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
                     cursor.getColumnIndex(CalendarContract.Events.SELF_ATTENDEE_STATUS));
             int availability = cursor.getInt(
                     cursor.getColumnIndex(CalendarContract.Events.AVAILABILITY));
+            int calendarId = cursor.getInt(cursor.getColumnIndex(
+                    CalendarContract.Events.CALENDAR_ID));
             if (isBusy(selfAttendeeStatus, availability) && (mPreviousState == false)) {
                 mPreviousState = true;
-                bundle.putString(CalendarContract.Events.DESCRIPTION, descriptionStr);
-                bundle.putString(CalendarContract.Events.TITLE, title);
+                bundle.putString(CalendarEvent.KEY_CALENDAR_DESCRIPTION_STRING, descriptionStr);
+                bundle.putString(CalendarEvent.KEY_CALENDAR_TITLE_STRING, title);
+                bundle.putInt(CalendarEvent.KEY_CALENDAR_ID_INT, calendarId);
                 bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, true);
                 Log.d(TAG, String.format("user is busy with %s", title));
                 return bundle;
