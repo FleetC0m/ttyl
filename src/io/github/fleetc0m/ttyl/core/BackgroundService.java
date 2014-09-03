@@ -6,8 +6,12 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import io.github.fleetc0m.ttyl.HomeActivity;
+import io.github.fleetc0m.ttyl.observer.IncomingCallObserver;
 import io.github.fleetc0m.ttyl.observer.RingerController;
+import io.github.fleetc0m.ttyl.observer.RingerMuter;
 import io.github.fleetc0m.ttyl.updater.CalendarEventUpdater;
+import io.github.fleetc0m.ttyl.updater.DrivingStateUpdater;
+import io.github.fleetc0m.ttyl.updater.IncomingCallUpdater;
 import io.github.fleetc0m.ttyl.util.Clock;
 import io.github.fleetc0m.ttyl.util.ClockImpl;
 
@@ -21,8 +25,12 @@ public class BackgroundService extends Service{
     private EventBus mEventBus;
     private Clock mClock;
     private CalendarEventUpdater mCalendarEventUpdater;
+    private DrivingStateUpdater mDrivingStateUpdater;
+    private IncomingCallUpdater mIncomingCallUpdater;
 
+    private IncomingCallObserver mIncomingCallObserver;
     private RingerController mRingerController;
+    private RingerMuter mRingerMuter;
 
     @Override
     public void onCreate() {
@@ -46,11 +54,15 @@ public class BackgroundService extends Service{
     private void registerUpdaters() {
         mCalendarEventUpdater = new CalendarEventUpdater(mClock, this, mEventBus);
         mEventBus.registerUpdater(mCalendarEventUpdater);
+        mDrivingStateUpdater = new DrivingStateUpdater(this, mEventBus);
+        mEventBus.registerUpdater(mDrivingStateUpdater);
     }
 
     private void registerObservers() {
         mRingerController = new RingerController(this, mEventBus);
         mEventBus.registerObserver(mRingerController);
+        mIncomingCallObserver = new IncomingCallObserver(this, mEventBus);
+        mEventBus.registerObserver(mIncomingCallObserver);
     }
 
     @Override

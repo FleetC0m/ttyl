@@ -12,6 +12,7 @@ public abstract class Event {
     public static final String QUIT = "quit";
     public static final String SETTINGS_CHANGED = "settings-changed";
     public static final String RINGER_CONTROL = "ringer-control";
+    public static final String INCOMING_CALL = "incoming-call";
 
     public abstract String getEventType();
 

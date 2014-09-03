@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.format.DateUtils;
 import android.util.Log;
 import com.google.common.annotations.VisibleForTesting;
@@ -116,6 +117,8 @@ public class DrivingStateUpdater implements EventBus.Updater, EventBus.Observer,
 
     @Override
     public void run() {
+        Looper.prepare();
+        Looper.loop();
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                 INTERVAL_MS, 0, mLocationListener);
     }
