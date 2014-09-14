@@ -24,6 +24,12 @@ public class IncomingCallObserver implements EventBus.Observer {
     public void onStateChanged(Event event) {
         Log.d(TAG, String.format("incoming call: %s", event.getAdditionalInfo().getString(
                 IncomingCallEvent.KEY_INCOMING_NUMBER_STRING)));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();;
     }
 
     @Override

@@ -18,7 +18,7 @@ import io.github.fleetc0m.ttyl.util.Clock;
  * ongoing event that is deemed to be busy, it notifies the event bus with information about this
  * calendar event. It stops pulling event when it sees an app quit event.
  */
-public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer, Runnable{
+public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer, Runnable {
     private static final String TAG = "CalendarEventUpdater";
     private static final String[] PROJECTION = new String[]{CalendarContract.Events.DESCRIPTION,
             CalendarContract.Events.SELF_ATTENDEE_STATUS,
@@ -112,6 +112,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
                 bundle.putString(CalendarEvent.KEY_CALENDAR_TITLE_STRING, title);
                 bundle.putInt(CalendarEvent.KEY_CALENDAR_ID_INT, calendarId);
                 bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, true);
+                bundle.putBoolean(Event.KEY_USER_BUSY_BOOLEAN, true);
                 Log.d(TAG, String.format("user is busy with %s", title));
                 return bundle;
             }
@@ -120,6 +121,7 @@ public class CalendarEventUpdater implements EventBus.Updater, EventBus.Observer
             Log.d(TAG, "user is now free");
             mPreviousState = false;
             bundle.putBoolean(CalendarEvent.KEY_BUSY_BOOLEAN, false);
+            bundle.putBoolean(Event.KEY_USER_BUSY_BOOLEAN, false);
             return bundle;
         }
         return null;

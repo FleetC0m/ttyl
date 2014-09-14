@@ -13,6 +13,9 @@ public abstract class Event {
     public static final String SETTINGS_CHANGED = "settings-changed";
     public static final String RINGER_CONTROL = "ringer-control";
     public static final String INCOMING_CALL = "incoming-call";
+    public static final String INCOMING_SMS = "incoming-sms";
+
+    public static final String KEY_USER_BUSY_BOOLEAN = "event-key-user-busy";
 
     public abstract String getEventType();
 
